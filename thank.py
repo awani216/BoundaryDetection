@@ -1,9 +1,9 @@
-def find_commercials():
+def find_thank():
         datafile = file('subtitles.txt3')
-        f = open('commercials_secs.txt','w')
+        f = open('Thank_time.txt','w')
         found = 0
         for line in datafile:
-            if 'SEG_00|Type=Commercial' in line: 
+            if 'THANK' in line: 
                 found = found + 1
                 start = (int(line[8:10])*3600)+int(line[10:12])*60+int(line[12:14])
                 end = (int(line[27:29])*3600)+int(line[29:31])*60+int(line[31:33])
@@ -16,4 +16,4 @@ def find_commercials():
         return found 
 
 
-print find_commercials()
+print find_thank()

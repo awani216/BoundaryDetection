@@ -1,9 +1,9 @@
 import numpy as np
 
-commercial = file('ans1.txt')
-music =  file('story_start.txt')
+commercial = file('commercials_secs.txt')
+music =  file('res4.txt')
 com = []
-mus = [] 
+mus = []
 for line in commercial:
     temp =  line.split('-')
     com.append([int(temp[0]), int(temp[1])])
@@ -19,18 +19,14 @@ for i in range(len(mus)):
             res.append(i)
 
 ans = np.delete(mus, res, 0)
-count = 0
+
 fres = open('ans.txt','w') 
 for i in range(len(ans)):
     line = str(ans[i][0]) + '-' + str(ans[i][1])
     fres.write(line +  '\n')
-    count = count + 1
 fres.close()
 
-
-print(len(com))
+print(len(ans))
 print(len(mus))
 print(ans)
-print(count)
 
- 
