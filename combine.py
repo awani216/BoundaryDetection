@@ -12,7 +12,7 @@ for line in file:
 for i in range(len(sp)):
     j=i
     if(i+1<len(sp)):
-        while i+1 < len(sp) and sp[i+1][0]-sp[i][1]<=100:
+        while i+1 < len(sp) and sp[i+1][0]-sp[i][1]<=96:
             i = i+1
             d.append(i)
         sp[j][1]=sp[i][0]

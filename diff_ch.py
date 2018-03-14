@@ -1,7 +1,7 @@
 import numpy as np
 
 commercial = file('commercials_secs.txt')
-music =  file('res4.txt')
+music =  file('res2.txt')
 com = []
 mus = []
 for line in commercial:
@@ -20,13 +20,13 @@ for i in range(len(mus)):
 
 ans = np.delete(mus, res, 0)
 
-fres = open('ans.txt','w') 
+fres = open('ans2.txt','w') 
 for i in range(len(ans)):
     line = str(ans[i][0]) + '-' + str(ans[i][1])
     fres.write(line +  '\n')
 fres.close()
 
+
+print(ans)
 print(len(ans))
 print(len(mus))
-print(ans)
-
