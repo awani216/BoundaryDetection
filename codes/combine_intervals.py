@@ -19,7 +19,7 @@ for i in range(len(sp)):
 
 ans = np.delete(sp, d, 0)
 
-f = open('combine_speech.txt','w')
+f = open(r'/file_generated/combine_speech.txt','w')
 for i in range(len(ans)):
     text = str(ans[i][0]) +'-'+str(ans[i][1])
     f.write(text+'\n')

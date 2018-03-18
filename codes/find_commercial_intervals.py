@@ -1,6 +1,6 @@
 def find_commercials():
-        datafile = file('subtitles.txt3')
-        f = open('commercials.txt','w')
+        datafile = file(r'../files_used/subtitles.txt3')
+        f = open(r'../files_generated/commercials_intervals.txt','w')
         found = 0
         for line in datafile:
             if 'Type=Commercial' in line: 
