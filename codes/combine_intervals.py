@@ -15,7 +15,7 @@ for i in range(len(sp)):
         while i+1 < len(sp) and sp[i+1][0]-sp[i][1]<=96:
             i = i+1
             d.append(i)
-        sp[j][1]=sp[i][0]
+        sp[j][1]=sp[i][1]
 
 ans = np.delete(sp, d, 0)
 
