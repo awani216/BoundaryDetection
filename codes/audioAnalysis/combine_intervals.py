@@ -1,3 +1,5 @@
+#for combining long speech intervals
+
 import numpy as np
 
 file = open('ans.txt')
