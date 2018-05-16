@@ -1,4 +1,5 @@
 #for combining long speech intervals
+#for obtaining intial and end boundaries
 
 import numpy as np
 
