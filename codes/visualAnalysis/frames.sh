@@ -1,4 +1,7 @@
+#this file is for dividing videos into frames.
+
 #!/bin/bash
+
 $cmd=""
 while IFS='' read -r line || [[ -n "$line" ]]; do
     echo $line
