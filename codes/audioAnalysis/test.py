@@ -1,3 +1,5 @@
+#this file is especially for testing various logics and then selecting the best one
+
 f = file('ans.txt')
 mus = []
 count = 0
