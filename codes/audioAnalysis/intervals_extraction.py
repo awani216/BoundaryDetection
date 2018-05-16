@@ -1,3 +1,6 @@
+#for removing commercial intervals from the music interval
+#for obtaining probable boundaries
+
 import numpy as np
 
 commercial = file('ans1.txt')
