@@ -19,7 +19,7 @@ def do():
     arr = []
     for line in fin:
         arr.append(int(float(line)))
-    res=musicarr(arr)
+    res = musicarr(arr)
     for i in range(len(res)):
         fop.write(str(res[i][0])+'-'+str(res[i][1])+'\n')
         print(res[i])
