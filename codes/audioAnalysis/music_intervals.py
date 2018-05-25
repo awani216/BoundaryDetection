@@ -9,7 +9,9 @@ sys.setdefaultencoding('utf8')
 
 def find_captions():
     os.system('dig 2006-01-02')
-    for file in os.system('ls') :
+    print (os.path.abspath("./"))
+    for file in os.listdir('./') :
+        print(file)
         if file.endswith('.txt3'):
             datafile = file
             f = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_intervals.txt','w')
