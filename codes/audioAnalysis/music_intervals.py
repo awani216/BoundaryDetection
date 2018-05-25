@@ -12,8 +12,8 @@ def find_captions():
     for file in os.system('ls') :
         if file.endswith('.txt3'):
             datafile = file
-            f = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_interval/'+file+r'/music_intervals.txt','w')
-            s = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_speech_interval/'+file+r'/music_speech_intervals.txt','w') 
+            f = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_intervals.txt','w')
+            s = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_speech_intervals.txt','w') 
             #r = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/speech_intervals.txt','w') 
             found = 0
             found1 = 0
@@ -44,4 +44,4 @@ def find_captions():
             return found+found1 
 
 
-    print find_captions()
+print find_captions()
