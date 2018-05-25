@@ -9,12 +9,8 @@ sys.setdefaultencoding('utf8')
 
 def find_captions():
     os.system('dig 2006-01-02')
-<<<<<<< HEAD
     print (os.path.abspath("./"))
     for file in os.listdir('./') :
-=======
-    for file in os.system('ls') :
->>>>>>> 47595226304cdad5b35cd0d7b5e668f4ea91d8ff
         print(file)
         if file.endswith('.txt3'):
             datafile = file
