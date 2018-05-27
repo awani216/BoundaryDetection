@@ -53,6 +53,6 @@ def findAllExtfiles(dirname):
     else :
         print("Not a directory")
 
-findAllExtfiles(os.path.abspath("../"))
-#findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
+#findAllExtfiles(os.path.abspath("../"))
+findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
 #print find_captions()
