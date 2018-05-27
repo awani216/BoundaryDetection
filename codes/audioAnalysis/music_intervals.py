@@ -8,10 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 def find_captions():
-    os.system('dig 2006-01-02')
-    print (os.path.abspath("./"))
-    for file in os.listdir('./') :
-        print(file)
+    
         if file.endswith('.txt3'):
             datafile = file
             f = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_intervals.txt','w')
@@ -44,6 +41,15 @@ def find_captions():
             print(found + found1)
             f.close()
             return found+found1 
+def findAllExtfiles(dirname):
+    dirlist = os.listdir(dirname)
+    #print(dirlist)
+    for name in dirlist:
+        if(name.enddswith('.txt3') or name.endswith('.txt')):
+            print(name)
+        elif(name.find(".") == -1):
+            findAllExtfiles(dirname + "/" + name)
 
 
-print find_captions()
+findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
+#print find_captions()
