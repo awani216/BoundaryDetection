@@ -46,11 +46,13 @@ def findAllExtfiles(dirname):
         dirlist = os.listdir(dirname)
         #print(dirlist)
         for name in dirlist:
-            if(name.enddswith('.txt3') or name.endswith('.txt')):
+            if(name.endswith('.txt3') or name.endswith('.txt')):
                 print(name)
             elif(name.find(".") == -1):
                 findAllExtfiles(dirname + "/" + name)
+    else :
+        print("Not a directory")
 
-
-findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
+findAllExtfiles(os.path.abspath("../"))
+#findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
 #print find_captions()
