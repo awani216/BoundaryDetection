@@ -42,13 +42,14 @@ def find_captions():
             f.close()
             return found+found1 
 def findAllExtfiles(dirname):
-    dirlist = os.listdir(dirname)
-    #print(dirlist)
-    for name in dirlist:
-        if(name.enddswith('.txt3') or name.endswith('.txt')):
-            print(name)
-        elif(name.find(".") == -1):
-            findAllExtfiles(dirname + "/" + name)
+    if os.path.isdir(dirname) :
+        dirlist = os.listdir(dirname)
+        #print(dirlist)
+        for name in dirlist:
+            if(name.enddswith('.txt3') or name.endswith('.txt')):
+                print(name)
+            elif(name.find(".") == -1):
+                findAllExtfiles(dirname + "/" + name)
 
 
 findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
