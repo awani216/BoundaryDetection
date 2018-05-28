@@ -1,5 +1,7 @@
 #this file is especially for testing various logics and then selecting the best one
+import os
 
+print(os.getcwd())
 f = file('ans.txt')
 mus = []
 count = 0

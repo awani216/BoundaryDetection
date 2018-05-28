@@ -20,7 +20,8 @@ def find_captions(name):
             print(music)
             for line in datafile:
                 line = line.decode('utf-8')
-                if re.search(music,line) : 
+                if re.search(music,line) :
+                    print(os.getcwd()) 
                     found = found + 1
                     f = open(r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_interval'+ name +r'music_intervals.txt','w')
                     time = str(3600*int(line[8:10])+60*int(line[10:12])+1*int(line[12:14])+10)+'-'+str(3600*int(line[27:29])+60*int(line[29:31])+int(line[31:33])-10)
@@ -40,7 +41,7 @@ def find_captions(name):
             print(found1)
             print(found + found1)
             f.close()
-            findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
+            os.path.abspath("../../../../Rosenthal")
             return found+found1 
 
 def findAllExtfiles(dirname):
