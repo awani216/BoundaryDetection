@@ -7,12 +7,12 @@ import os
 reload(sys)  
 sys.setdefaultencoding('utf8')
 
-def find_captions():
+def find_captions(name):
     
         if file.endswith('.txt3'):
             datafile = file
-            f = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_intervals.txt','w')
-            s = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/music_speech_intervals.txt','w') 
+            f = open(r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_interval'+ name +r'music_intervals.txt','w')
+            s = open(r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_speech_interval'+ name +r'music_speech_intervals.txt','w') 
             #r = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/speech_intervals.txt','w') 
             found = 0
             found1 = 0
@@ -41,6 +41,7 @@ def find_captions():
             print(found + found1)
             f.close()
             return found+found1 
+
 def findAllExtfiles(dirname):
     if os.path.isdir(dirname) :
         dirlist = os.listdir(dirname)
@@ -48,6 +49,8 @@ def findAllExtfiles(dirname):
         for name in dirlist:
             if(name.endswith('.txt3') or name.endswith('.txt')):
                 print(name)
+                find_captions(name)
+                print("Task done")
             elif(name.find(".") == -1):
                 findAllExtfiles(dirname + "/" + name)
     else :
