@@ -8,7 +8,7 @@ reload(sys)
 sys.setdefaultencoding('utf8')
 
 def find_captions(name):      
-    datafile = name
+    datafile = open(name,'r')
     print(name)
     #r = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/speech_intervals.txt','w') 
     found = 0
