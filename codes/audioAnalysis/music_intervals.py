@@ -18,6 +18,7 @@ def find_captions(name):
     music_speech = u'\u266A'
     print(music)
     for line in datafile:
+        print(line)
         line = line.decode('utf-8')
         if re.search(music,line) :
             print(os.getcwd()) 
