@@ -6,8 +6,7 @@ import os
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
-
-def find_captions(name):      
+def find_captions(name,relname):      
     datafile = open(name,'r')
     print(name)
     #r = open(r'/home/walter-white/Desktop/test/files_generated/audioAnalysis/speech_intervals.txt','w') 
@@ -23,7 +22,7 @@ def find_captions(name):
         if re.search(music,line) :
             print(os.getcwd()) 
             found = found + 1
-            f = open(r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_intervals.txt','w')
+            f = open(r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_intervals/'+ relname ,'w')
             time = str(3600*int(line[8:10])+60*int(line[10:12])+1*int(line[12:14])+10)+'-'+str(3600*int(line[27:29])+60*int(line[29:31])+int(line[31:33])-10)
             f.write(time+'\n')
             print(line)
@@ -31,7 +30,7 @@ def find_captions(name):
             f.close()
         elif re.search(music_speech,line) :
             found1 = found1 + 1
-            s = open(r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_speech_interval.txt','w') 
+            s = open(r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_speech_intervals/'+ relname ,'w') 
             time = str(3600*int(line[8:10])+60*int(line[10:12])+1*int(line[12:14])+10)+'-'+str(3600*int(line[27:29])+60*int(line[29:31])+int(line[31:33])-10)
             s.write(time+'\n')
             print(line)
@@ -48,11 +47,19 @@ def find_captions(name):
 def findAllExtfiles(dirname):
     if os.path.isdir(dirname) :
         dirlist = os.listdir(dirname)
+        dname = os.path.abspath("../../../../Rosenthal")
+        relname = dirlist.strip(dname)
+        rootname =  r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_intervals'
+        absname = rootname + relname
+        os.makedirs(absname)
+        rootname =  r'/home/awanimishra/space/BoundaryDetection/files_generated/audioAnalysis/music_speech_intervals'
+        absname = rootname + relname
+        os.makedirs(absname)
         #print(dirlist)
         for name in dirlist:
             if(name.endswith('.txt3') or name.endswith('.txt')):
                 print(name)
-                find_captions(name)
+                find_captions(dirname + "/" + name, relname + "/" + name)
                 print("Task done")
             elif(name.find(".") == -1):
                 findAllExtfiles(dirname + "/" + name)
@@ -60,5 +67,6 @@ def findAllExtfiles(dirname):
         print("Not a directory")
 
 #findAllExtfiles(os.path.abspath("../"))
+createDirSubdir()
 findAllExtfiles(os.path.abspath("../../../../Rosenthal"))
 #print find_captions()
