@@ -1,7 +1,12 @@
+# Module for collecting logo dataset from some sample which can be used for further obtaining show boundary
+
 import os
 
+# This function will convert the part of video lying in music interval into frames
+# From these frames we will select the logo for logo dataset  
+
 def createFrames(dirname):
-    if os.isdir(dirname):
+    if os.isdir(dirname): 
         dirlist = os.listdir(dirname)
         dname = os.path.abspath("../../files_generated/audioAnalysis/music_intervals")
         relname = dirname.strip(dname)
