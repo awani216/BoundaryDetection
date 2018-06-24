@@ -14,4 +14,4 @@ for i in f1:
     if(f1[i][10]=='y' or f1[i][10]=='Y'):
         h, m, s = (f1[i][12]).split(':')
         time = str(int(h)*3600+int(m)*60+int(s)) 
-        os.sysem("ffmpeg -i " + path + " -ss "+ time +" -t 5 -q:a 0 -map a " + videofilepath)
+        os.sysem("ffmpeg -i " + videofilepath + " -ss "+ time +" -t 5 -q:a 0 -map a " + path)
