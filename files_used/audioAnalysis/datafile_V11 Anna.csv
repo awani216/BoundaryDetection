@@ -1,0 +1,7 @@
+,VCRNum,PullDate,Weekday,ShowDate,Channel,Show,Start,Finish,Duration,Showtime,Boundary,Start words,End words,Visual y/n,Visual descr,Visual time,Audio y/n,Audio descr,Audio time,Object y/n,Object descr,Object time,Notes,Tape duration
+0,2,2006-01-03,2,2006-01-02,KNBC,The_Ellen_DeGeneres_Show,00:00:53,00:58:25,00:57:32,16:00:00,,,,y,screen,00:00:25-00:00:26,y,theme,00:00:53-00:01:08,y,Logo – bottom left,00:01:07,,
+1,11,2006-01-02,2,2006-01-02,CNN,Live_Today,00:00:36,02:00:09,01:59:33,07:00:00,,,,y,double screen,00:00:36,n,,,,logo bottom right,00:00:36,,
+2,11,2006-01-02,2,2006-01-02,CNN,International,02:00:08,02:57:22,00:57:14,09:00:00,black frame,,,,,,y,"theme, ""This is your world today""","02:00:08-02:00:15, 02:00:12-02:00:14",y,logo bottom right,02:00:09,,
+3,11,2006-01-02,2,2006-01-02,CNN,Livefrom,03:00:06,05:59:53,02:59:47,10:00:00,black frame,,,,,,y,tune,03:00:06-03:00:09,y,logo bottom right,03:00:06,,
+4,11,2006-01-02,2,2006-01-02,CNN,The_Situation_Room,05:59:52,08:00:18,02:00:26,13:00:00,,,,y,theme,06:00:24-06:00:39,y,"""You are in the situation room"", theme","05:59:53-05:59:56, 06:00:24-06:00:39",y,logo bottom right,05:59:52,,
+5,11,2006-01-02,2,2006-01-02,CNN,Lou_Dobbs_Tonight,08:00:18,08:06:40,00:06:22,15:00:00,,,,,,,,,,y,"logo bottom right, strip","08:00:18, 08:01:35",,

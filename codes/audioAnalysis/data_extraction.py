@@ -21,7 +21,7 @@ for i in f1:
         dir1 = year
         dir2 = dir1 + "-" + month
         dir3 = dir2 + "-" + day
-        #rootdir = "../../../../Rosenthal"
+        #rootdir = "../../../../Rosenthal/"
         #folderpath = rootdir + dir1 + "/" + dir2 + "/" + dir3 + "/"
         folderpath = ""
         wildstring = folderpath + dir3 + "*" + vtype + "*" + ".mp4"

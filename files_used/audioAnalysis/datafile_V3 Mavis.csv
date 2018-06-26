@@ -1,0 +1,3 @@
+,PullDate,Weekday,ShowDate,Channel,Show,Start,Finish,Duration,Showtime,Boundary,Start words,End words,Visual y/n,Visual descr,Visual time,Audio y/n,Audio descr,Audio time,Object y/n,Object descr,Object time,Notes,Tape duration
+3,2006-01-02,1,2006-01-01,KABC,Eyewitness_News,00:00:04,02:29:58,02:29:54,16:00:00,,,,n,,,n,,,y,logo bottom left,00:00:08,,
+3,2006-01-02,1,2006-01-01,KABC,World_News_Tonight,02:30:09,02:58:36,00:28:27,18:30:00,black screen,,,y,theme,"02:30:10-02:30:14, 02:30:46-02:30:57",y,"theme, ""From ABC News, This is ABC News Tonight""",02:30:49-02:30:53,y,logo bottom left,02:32:21,,
