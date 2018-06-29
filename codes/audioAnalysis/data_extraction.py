@@ -8,30 +8,35 @@ import csv
 
 filepath = "datafile.csv" 
 path = "musicext/"
-videofilepath = "" 
+videofilename = "" 
 
 f1 = open(filepath,'r')
 f1 = csv.reader(f1)
 for i in f1:
-    if(i[15]=='y' or i[15]=='Y'):
-        pulldate = i[2]
+    if(i[17]=='y' or i[17]=='Y'):
+        pulldate = i[2].split(" ")[0]
         vtype = "V" + i[1].strip().split(".")[0]
-        #month, day, year = pulldate.split("/")
-        year,month,day = pulldate.split("-")
+        if(len(pulldate.split("/")) == 3): 
+            month, day, year = pulldate.split("/")
+        else:
+            year,month,day = pulldate.split("-")
         dir1 = year
         dir2 = dir1 + "-" + month
         dir3 = dir2 + "-" + day
         rootdir = "/mnt/netapp/NewsScape/Rosenthal/"
         folderpath = rootdir + dir1 + "/" + dir2 + "/" + dir3 + "/"
-        folderpath = ""
-        wildstring = folderpath + dir3 + "*" + vtype + "*" + ".mp4"
-        print(wildstring)
-        if (glob.glob(wildstring) == []):
+        videofilepath = folderpath + videofilename
+        # Check if the file exixts.
+        if (not os.path.exists(videofilepath)):
             continue
-        videofilename = glob.glob(wildstring)[0]
-        intervals = i[17].split(",")
+        intervals = i[19].split(",")
         for interval in intervals :
             h, m, s = (interval.split("-")[0]).split(':')
             time = str(int(h)*3600+int(m)*60+int(s)) 
-            os.system("ffmpeg -i " + videofilename + " -ss "+ time +" -t 5 -q:a 0 -map a " 
-                    + path + dir3 + "-" + h.strip() + "-" + m.strip() + "-" + s.strip() + ".mp3")
+            duration = "5"
+            if (len(interval.split("-")) >= 2):
+                h1, m1, s1 = interval.split("-")[1].split(":")
+                duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - time)
+            os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t " 
+                    + duration + " -q:a 0 -map a " + path + dir3 + "-" 
+                    + h.strip() + "-" + m.strip() + "-" + s.strip() + ".mp3")
