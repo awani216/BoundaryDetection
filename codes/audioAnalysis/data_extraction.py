@@ -30,16 +30,26 @@ for i in f1:
         continue
     if(i[17]=='y' or i[17]=='Y'):
         intervals = i[19].split(",")
+        for interval in intervals :
+            h, m, s = (interval.split("-")[0]).split(':')
+            time = str(int(h)*3600+int(m)*60+int(s)) 
+            duration = "5"
+            if (len(interval.split("-")) >= 2):
+                h1, m1, s1 = interval.split("-")[1].split(":")
+                duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - time)
+            os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t " 
+                    + duration + " -q:a 0 -map a " + path + dir3 + "-" 
+                    + h.strip() + "-" + m.strip() + "-" + s.strip() + ".mp3")
     else:
         intervals = i[7]
-    for interval in intervals :
-        h, m, s = (interval.split("-")[0]).split(':')
-        time = str(int(h)*3600+int(m)*60+int(s)) 
-        duration = "5"
-        if (len(interval.split("-")) >= 2):
-            h1, m1, s1 = interval.split("-")[1].split(":")
-            duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - time)
-        os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t " 
-                + duration + " -q:a 0 -map a " + path + dir3 + "-" 
-                + h.strip() + "-" + m.strip() + "-" + s.strip() + ".mp3")
+        for interval in intervals :
+            h, m, s = (interval.split("-")[0]).split(':')
+            time = str(int(h)*3600+int(m)*60+int(s)-2) 
+            duration = "5"
+            if (len(interval.split("-")) >= 2):
+                h1, m1, s1 = interval.split("-")[1].split(":")
+                duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - time)
+            os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t " 
+                    + duration + " -q:a 0 -map a " + path + dir3 + "-" 
+                    + h.strip() + "-" + m.strip() + "-" + s.strip() + ".mp3")
     
