@@ -50,6 +50,6 @@ for i in f1:
                 h1, m1, s1 = interval.split("-")[1].split(":")
                 duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - time)
             os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t " 
-                    + duration + " -q:a 0 -map a " + path + dir3 + "-" 
+                    + duration + " -q:a 0 -map a " + path + "nomusic/" + dir3 + "-" 
                     + h.strip() + "-" + m.strip() + "-" + s.strip() + ".mp3")
     
