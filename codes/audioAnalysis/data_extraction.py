@@ -12,6 +12,8 @@ videofilename = ""
 
 f1 = open(filepath,'r')
 f1 = csv.reader(f1)
+
+#iterating over the rows and checking if the file path corresponding to manual annotation is given
 for i in f1:
     pulldate = i[2].split(" ")[0]
     vtype = "V" + i[1].strip().split(".")[0]
@@ -28,6 +30,7 @@ for i in f1:
     # Check if the file exixts.
     if (not os.path.exists(videofilepath)):
         continue
+    #Checking if audio hint is present or not
     if(i[17]=='y' or i[17]=='Y'):
         intervals = i[19].split(",")
         for interval in intervals :
