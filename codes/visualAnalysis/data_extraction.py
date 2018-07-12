@@ -6,10 +6,10 @@ import csv
 #path -> where the data will be saved
 #videofilepath -> path to video used for data extraction
 
-filepath = "../../files_used/audioAnalysis/datafile_V12 Skylar.csv"
-path = "../../files_generated/audioAnalysis/musicext/V12/"
+filepath = "../../files_used/visualAnalysis/datafile_V12 Skylar.csv"
+path = "../../files_generated/visualAnalysis/imageext/V12/"
 videofilename = "2006-01-10_0000_US_00001670_V12_VHS4_MB1_E1_JN.mp4"
-path1 = "../../files_generated/audioAnalysis/musicext/nomusic/V12/"
+path1 = "../../files_generated/visualAnalysis/imageext/noimage/V12/"
 
 f1 = open(filepath,'r')
 f1 = csv.reader(f1)
@@ -34,7 +34,7 @@ for i in f1:
     if (not os.path.exists(videofilepath)):
         print("video file not found")
         continue
-    #Checking if audio hint is present or not
+    #Checking if pictorial hint is present or not
     if((i[17]=='y' or i[17]=='Y') and (i[19])):
         intervals = i[19].split(", ")
         for interval in intervals :
@@ -51,8 +51,8 @@ for i in f1:
                 h1, m1, s1 = interval.split("-")[1].split(":")
                 print(h1+" "+m1+" "+s1)
                 duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - int(time))
-            os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t "
-                    + duration + " -q:a 0 -map a " + destpath)
+            os.system("ffmpeg -ss " + time + " -i " + videofilepath + " -t " + duration 
+                    + " -vf fps=1 " + destpath + "%d.jpg")       
     else:
         intervals = i[8].split(",")
         for interval in intervals :
@@ -66,6 +66,6 @@ for i in f1:
             if (len(interval.split("-")) >= 2):
                 h1, m1, s1 = interval.split("-")[1].split(":")
                 duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - time)
-            os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t "
-                    + duration + " -q:a 0 -map a " + destpath)
+            os.system("ffmpeg -ss " + time + " -i " + videofilepath + " -t " + duration 
+            + " -vf fps=1 " + destpath + "%d.jpg")       
 
