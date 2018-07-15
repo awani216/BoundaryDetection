@@ -1,4 +1,4 @@
-code for extracting the music samples
+#code for extracting the music samples
 import os
 import glob
 import csv
@@ -6,7 +6,7 @@ import csv
 #path -> where the data will be saved
 #videofilepath -> path to video used for data extraction
 
-filepath = "../../files_used/visualAnalysis/datafile_V12 Skylar.csv"
+filepath = "../../files_used/audioAnalysis/datafile_V12 Skylar.csv"
 path = "../../files_generated/visualAnalysis/imageext/V12/"
 videofilename = "2006-01-10_0000_US_00001670_V12_VHS4_MB1_E1_JN.mp4"
 path1 = "../../files_generated/visualAnalysis/imageext/noimage/V12/"
@@ -35,8 +35,8 @@ for i in f1:
         print("video file not found")
         continue
     #Checking if pictorial hint is present or not
-    if((i[17]=='y' or i[17]=='Y') and (i[19])):
-        intervals = i[19].split(", ")
+    if((i[14]=='y' or i[14]=='Y') and (i[16])):
+        intervals = i[16].split(", ")
         for interval in intervals :
             print(interval)
             h, m, s = (interval.split("-")[0]).split(':')
