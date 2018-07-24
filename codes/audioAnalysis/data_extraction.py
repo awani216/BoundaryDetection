@@ -13,7 +13,7 @@ videofilename = ""
 f1 = open(filepath,'r')
 f1 = csv.reader(f1)
 
-#iterating over the rows and checking if the file path corresponding to manual annotation is given
+#iterating over the rows and checking if the videofilepath corresponding to manual annotation is given
 for i in f1:
     pulldate = i[2].split(" ")[0]
     vtype = "V" + i[1].strip().split(".")[0]
@@ -32,18 +32,24 @@ for i in f1:
         continue
     #Checking if audio hint is present or not
     if(i[17]=='y' or i[17]=='Y'):
+        #multiple intervals were present hence we need to extract audio from every intervals
         intervals = i[19].split(",")
+        #iterating over every interval 
         for interval in intervals :
             h, m, s = (interval.split("-")[0]).split(':')
-            time = str(int(h)*3600+int(m)*60+int(s)) 
+            time = str(int(h)*3600+int(m)*60+int(s))
+            #if end time if not given then we extracted the 5 sec audio 
             duration = "5"
             if (len(interval.split("-")) >= 2):
                 h1, m1, s1 = interval.split("-")[1].split(":")
+                #value of duration has been changed since the end time was given
                 duration = str(int(h1)*3600 + int(m1)*60 + int(s1) - time)
             os.system("ffmpeg -i " + videofilepath + " -ss "+ time +" -t " 
                     + duration + " -q:a 0 -map a " + path + dir3 + "-" 
                     + h.strip() + "-" + m.strip() + "-" + s.strip() + ".mp3")
     else:
+        #if no audio hint was present we simply extracted a 5 sec audion from start of the show
+        #these are stored inside a folder named nomusic 
         intervals = i[7]
         for interval in intervals :
             h, m, s = (interval.split("-")[0]).split(':')

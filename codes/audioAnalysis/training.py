@@ -24,7 +24,7 @@ from sklearn.preprocessing import LabelEncoder
 # Defining varibles
  
 # Path to directory containing music files
-musicPath
+musicPath = 
 
 # Path to directory containing speech files
 speechPath
@@ -35,8 +35,13 @@ samplingRate
 # Sample Duration duration
 samplingDuration
 
-musicFiles  = os.listdir(musicPath) 
-speechFiles = os.listdir(speechPath)
+musicSubDirs  = os.listdir(musicPath) 
+speechFiles = speechPath + os.listdir(speechPath)
+
+musicFiles = []
+for pth in musicSubDirs:
+    abspth = musicPath + pth
+    musicFiles = abspth + os.listdir(abspath) 
 
 #-----------------\
 # Data Extraction \
