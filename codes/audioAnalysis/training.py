@@ -1,87 +1,87 @@
-#/-------------------------------------------------------------------------\
-#/ Audio training module                                                   \
-#/ Author : Awani Mishra                                                   \
-#/ Redhen Labs                                                             \
-#/ Project : Show Segmentation                                             \
-#/ Objective : Train a machine learning kernel to detect and calssify audio\ 
-#/ input as music or speech.                                               \
-#/-------------------------------------------------------------------------\
-
-import os
-import numpy as np
-import sklearn
-import librosa as lr
-import pandas as pd
-import numpy as np
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
 from keras.optimizers import Adam
-from keras.utils import np_utils
-from sklearn import metrics
+import keras.utils
+import librosa
+import librosa.display
+import numpy as np
+import matplotlib.pyplot as plt
+import glob
+import time
 from sklearn.preprocessing import LabelEncoder
+import np_utils
+import h5py
 
-# Defining varibles
- 
-# Path to directory containing music files
-musicPath = 
 
-# Path to directory containing speech files
-speechPath
+########## Defining Global Variables ######################
 
-# Sampling rate (for music files)
-samplingRate
+# list of all speech files
+speechFiles = glob.glob("./speech/*")
 
-# Sample Duration duration
-samplingDuration
+# list of all music files
+musicFiles = glob.glob("./music/**/*.mp3")
 
-musicSubDirs  = os.listdir(musicPath) 
-speechFiles = speechPath + os.listdir(speechPath)
+# length of intervals for audio classification
+segLength = 1
 
-musicFiles = []
-for pth in musicSubDirs:
-    abspth = musicPath + pth
-    musicFiles = abspth + os.listdir(abspath) 
+# Sampling Rate of audio (use None for sampling using files sampling rate)
+sr = 22050
 
-#-----------------\
-# Data Extraction \
-#-----------------\
+def makeData (fl, label):
+    try:
+        print(fl)
+        audioDuration = (librosa.get_duration(filename=fl) // 1.0) - 1
+        numSegments = int(audioDuration // segLength)
+        data = []
+        if(audioDuration > 100):
+            audioDuration = 100.0
+            numSegments   = 100
+        y , srp   = librosa.load(fl, sr=sr, duration=audioDuration, res_type='kaiser_fast')
+        print(audioDuration , y.shape)     
+        for i in range(numSegments - 1):
+            offset    = i*sr
+            yp        = y [offset:(offset+sr)]
+            D         = librosa.feature.mfcc(yp, sr=sr, n_mfcc=40)
+            D         = np.mean(D, axis=1)
+            D         = np.append(D, label)
+            data.append(D)
 
-def extractDataFromFile(filepath, label):
-    fileDuration = ls.get_duration(filepath)
-    numSegments = filesDuration // samplingDuration
-    data = []
-    for i in range(numSegments)
-        toffset = i * duration
-        tdata, wt = lr.load(filepath, sr=samplingRate, offset=toffset, duration=samplingDuration)
-        mfccs = np.mean(librosa.feature.mfcc(y=tdata, sr=samplingRate, n_mfcc=40).T,axis=0)
-        mfccs.append(label)
-        data.append(mfccs)
-    return data
+        return data
+    except Exception as e:
+        print("Error encountered while parsing file: ", fl)
+        return []
 
 dataset = []
 
-for i in musicFiles:
-    data = extractDataFromFile(i, 0)
-    dataset.append(data)
-
 for i in speechFiles:
-    data = extractDataFromFile(i, 1)
-    dataset.append(data)
+    dataset = dataset + makeData(i, 0)
 
-#--------------------\
-# Data Training      \ 
-#--------------------\
+for i in musicFiles:
+    dataset = dataset + makeData(i,1)
 
-numberCols = length(dataset[0])
-X = dataset[:, :-1]
-y = dataset[:, numberCols-1]
+dataset = np.array(dataset)
 
+datasetLen = len(dataset)
+
+print(datasetLen)
+perm = np.random.permutation(datasetLen)
+
+dataset = dataset[perm]
+
+X = dataset[:-200, :-1]
+Y = dataset[:-200, -1]
+
+valX = dataset[-200: , :-1]
+valY = dataset[-200: , -1]
+
+print(X.shape, Y.shape, valX.shape, valY.shape)
 lb = LabelEncoder()
 
-y = np_utils.to_categorical(lb.fit_transform(y))
+Y = keras.utils.to_categorical(lb.fit_transform(Y))
+valY = keras.utils.to_categorical(lb.fit_transform(valY))
 
-num_labels = y.shape[1]
+nLabels = 2
 filter_size = 2
 
 # build model
@@ -95,9 +95,10 @@ model.add(Dense(256))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
 
-model.add(Dense(num_labels))
+model.add(Dense(nLabels))
 model.add(Activation('softmax'))
 
 model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
+model.fit(X,Y, batch_size=128, epochs=1000, validation_data=(valX, valY))
 
-model.fit(X, y, batch_size=32, epochs=5, validation_data=(val_x, val_y))
+model.save("audioSpeech.h5")
