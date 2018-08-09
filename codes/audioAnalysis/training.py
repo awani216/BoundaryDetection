@@ -28,7 +28,7 @@ segLength = 1
 # Sampling Rate of audio (use None for sampling using files sampling rate)
 sr = 22050
 
-def makeData (fl, label):
+def makeData (fl, label, segLength, sr):
     try:
         print(fl)
         audioDuration = (librosa.get_duration(filename=fl) // 1.0) - 1
@@ -38,7 +38,7 @@ def makeData (fl, label):
             audioDuration = 100.0
             numSegments   = 100
         y , srp   = librosa.load(fl, sr=sr, duration=audioDuration, res_type='kaiser_fast')
-        print(audioDuration , y.shape)     
+        print(audioDuration , y.shape)
         for i in range(numSegments - 1):
             offset    = i*sr
             yp        = y [offset:(offset+sr)]
@@ -52,53 +52,56 @@ def makeData (fl, label):
         print("Error encountered while parsing file: ", fl)
         return []
 
-dataset = []
+def musicTraining(speechFiles, musicFiles, modelFile, segLength=1, sr=22050):
+    dataset = []
 
-for i in speechFiles:
-    dataset = dataset + makeData(i, 0)
+    for i in speechFiles:
+        dataset = dataset + makeData(i, 0, segLength, sr)
 
-for i in musicFiles:
-    dataset = dataset + makeData(i,1)
+    for i in musicFiles:
+        dataset = dataset + makeData(i,1, segLength, sr)
 
-dataset = np.array(dataset)
+    dataset = np.array(dataset)
 
-datasetLen = len(dataset)
+    datasetLen = len(dataset)
 
-print(datasetLen)
-perm = np.random.permutation(datasetLen)
+    print(datasetLen)
+    perm = np.random.permutation(datasetLen)
 
-dataset = dataset[perm]
+    dataset = dataset[perm]
 
-X = dataset[:-200, :-1]
-Y = dataset[:-200, -1]
+    X = dataset[:-200, :-1]
+    Y = dataset[:-200, -1]
 
-valX = dataset[-200: , :-1]
-valY = dataset[-200: , -1]
+    valX = dataset[-200: , :-1]
+    valY = dataset[-200: , -1]
 
-print(X.shape, Y.shape, valX.shape, valY.shape)
-lb = LabelEncoder()
+    print(X.shape, Y.shape, valX.shape, valY.shape)
+    lb = LabelEncoder()
 
-Y = keras.utils.to_categorical(lb.fit_transform(Y))
-valY = keras.utils.to_categorical(lb.fit_transform(valY))
+    Y = keras.utils.to_categorical(lb.fit_transform(Y))
+    valY = keras.utils.to_categorical(lb.fit_transform(valY))
 
-nLabels = 2
-filter_size = 2
+    nLabels = 2
+    filter_size = 2
 
-# build model
-model = Sequential()
+    # build model
+    model = Sequential()
 
-model.add(Dense(256, input_shape=(40,)))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
+    model.add(Dense(256, input_shape=(40,)))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
 
-model.add(Dense(256))
-model.add(Activation('relu'))
-model.add(Dropout(0.5))
+    model.add(Dense(256))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
 
-model.add(Dense(nLabels))
-model.add(Activation('softmax'))
+    model.add(Dense(nLabels))
+    model.add(Activation('softmax'))
 
-model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
-model.fit(X,Y, batch_size=128, epochs=1000, validation_data=(valX, valY))
+    model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
+    model.fit(X,Y, batch_size=128, epochs=1000, validation_data=(valX, valY))
 
-model.save("audioSpeech.h5")
+    model.save(modelFile)
+
+musicTraining(speechFiles, musicFiles, "ddd.h5")
