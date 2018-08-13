@@ -1,0 +1,6 @@
+Ellen:3600
+Channel4News:1800
+Extra:1800
+AccessHollywood:1800
+NightlyNews:1800
+TonightShow:9000

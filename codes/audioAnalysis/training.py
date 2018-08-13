@@ -104,4 +104,4 @@ def musicTraining(speechFiles, musicFiles, modelFile, segLength=1, sr=22050):
 
     model.save(modelFile)
 
-musicTraining(speechFiles, musicFiles, "ddd.h5")
+#musicTraining(speechFiles, musicFiles, "ddd.h5")

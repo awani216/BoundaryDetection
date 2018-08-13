@@ -77,4 +77,4 @@ def classification(musicFile, segLength, sr, breakInterval, resultFile, modelFil
     f.close()
 
 
-classification(musicFile, segLength, sr, breakInterval, resultFile, modelFile)
+#classification(musicFile, segLength, sr, breakInterval, resultFile, modelFile)
