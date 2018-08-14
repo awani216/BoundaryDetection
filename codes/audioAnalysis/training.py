@@ -1,3 +1,8 @@
+###############################################################################
+#------------------Audio Training Module--------------------------------------#
+# Author: Awani Mishra                                                        #
+# Task  : Train a classifier using music and sppech files                     #
+#-----------------------------------------------------------------------------#
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
 from keras.layers import Convolution2D, MaxPooling2D
@@ -28,6 +33,15 @@ segLength = 1
 # Sampling Rate of audio (use None for sampling using files sampling rate)
 sr = 22050
 
+## Extracts data (MFCC) from a file and created a dataset.
+# Definition of parameters
+# fl : file to ectract data from
+# label : 0 if speech and 1 if music
+# segLength : length of intervals which will be classified
+# sr        : samplingRate
+# output    : returns an array of size (n, 41), where n is numer of datapoints
+#             [= (lenght of file)/segLength] and contains MFCC values and label
+#             at the last index
 def makeData (fl, label, segLength, sr):
     try:
         print(fl)
@@ -52,7 +66,18 @@ def makeData (fl, label, segLength, sr):
         print("Error encountered while parsing file: ", fl)
         return []
 
+## Central training module. Uses paths of speech and music files to train a
+#  sequential keras model
+# Definition of parameters
+# speechFiles : Path of speech files (a list)
+# musicFiles : Path of music files (a list)
+# modelFile  : Path where generated model will be saved
+# segLength : length of intervals which will be classified
+# sr        : Sampling rate
+# Output    : A keras classification model.
 def musicTraining(speechFiles, musicFiles, modelFile, segLength=1, sr=22050):
+
+    # making dataset using all files provided
     dataset = []
 
     for i in speechFiles:
@@ -65,11 +90,11 @@ def musicTraining(speechFiles, musicFiles, modelFile, segLength=1, sr=22050):
 
     datasetLen = len(dataset)
 
-    print(datasetLen)
+    # Shuffling the dataset for better results.
     perm = np.random.permutation(datasetLen)
-
     dataset = dataset[perm]
 
+    # Partitioning dataset with last 200 values for validation.
     X = dataset[:-200, :-1]
     Y = dataset[:-200, -1]
 
@@ -77,11 +102,16 @@ def musicTraining(speechFiles, musicFiles, modelFile, segLength=1, sr=22050):
     valY = dataset[-200: , -1]
 
     print(X.shape, Y.shape, valX.shape, valY.shape)
+
+    # Starting with Training Part
+
+    # One hot encoding
     lb = LabelEncoder()
 
     Y = keras.utils.to_categorical(lb.fit_transform(Y))
     valY = keras.utils.to_categorical(lb.fit_transform(valY))
 
+    # Defining model parameters
     nLabels = 2
     filter_size = 2
 
@@ -102,6 +132,7 @@ def musicTraining(speechFiles, musicFiles, modelFile, segLength=1, sr=22050):
     model.compile(loss='categorical_crossentropy', metrics=['accuracy'], optimizer='adam')
     model.fit(X,Y, batch_size=128, epochs=1000, validation_data=(valX, valY))
 
+    # Saving model
     model.save(modelFile)
 
 #musicTraining(speechFiles, musicFiles, "ddd.h5")

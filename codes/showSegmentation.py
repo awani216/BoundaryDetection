@@ -1,3 +1,9 @@
+###############################################################################
+#------------------Central Driving Module-------------------------------------#
+# Author: Awani Mishra                                                        #
+# Task  : Wrappers for functionalities provided in this Module                #
+#-----------------------------------------------------------------------------#
+
 import argparse
 import cv2
 from keras.models import Sequential, load_model
@@ -16,43 +22,67 @@ from audioAnalysis.classification import classification
 from textualAnalysis.music_intervals import makeMusicSpeechIntervals
 from textualAnalysis.commercial_intervals import find_commercials
 from textualAnalysis.remove_commercials import remove_commercials
+from utils.segment import segmentUsingSegmenetationResults, segmentUsingAnnotations
+from utils.dateutil import findShowDate
 
 
+#------------------------------------------------------------------------------
+# Default values declaration
 
-#------------------------------------------------------------------
-# Default values declaration --------------------------------------
-
+# Path to templates to be used for show detection
 templateDir = "../files_used/visualAnalysis/template/"
 
+# Path to audio classification model to be used
 defaultModel = "../files_used/audioAnalysis/audioSpeech.h5"
 
+# Path to store audio classification file
 audioClassificationFile = "../files_generated/textualAnalysis/audioSpeech.txt"
 
+# Path to store audio Interval File
 audioSpeechIntervalFile = "../files_generated/textualAnalysis/musicIntervals.txt"
 
+# Path to store file conta commercial intervals
 commercial_extracted_file = "../files_generated/textualAnalysis/commercial_extracted.txt"
 
+# Path to store file which has commercial intervals removed
 commercial_removed_file = "../files_generated/textualAnalysis/commercial_removed.txt"
 
+# Path to extracted audio file from video
 extracted_wav_file = "../files_generated/audioAnalysis/extracted_sound.wav"
 
+# Default sampling rate for audio analysis
 defaultSamplingRate = 22050
 
+# Default break Interval for audio analysis
 defaultBreakInterval = 3600
 
+# Default segment length to classify a audio
 defaultSegLength     = 1
 
+#------------------------------------------------------------------------------
 
+## Wrapper to call classification function
+## For details look int audioAnalysis/classification.py
 def classificationWrapper(inputFile, outputFile, modelFile, samplingRate, breakInterval, segLength):
     classification(inputFile, segLength, samplingRate, breakInterval, outputFile, modelFile)
 
+## Wrapper to call training function
+## For details look int audioAnalysis/training.py
+# Please ensure that the music and speech directories are separate and that the files are
+# placed directly inside the folder.
 def trainingWrapper(musicDir, speechDir, modelFile, samplingRate, segLength):
+
+    # Listing all music and speech files to be used later for training.
     musicFilesP = os.listdir(musicDir)
     musicFiles = [(musicDir + "/" + i) for i in  musicFilesP]
     speechFilesP = os.listdir(speechDir)
     speechFiles = [(speechDir + "/" + i) for i in  speechFilesP]
+
+    # Calling the main function
     musicTraining(speechFiles, musicFiles, modelFile, segLength, samplingRate)
 
+## Wrapper to call show segmentation function
+## For details on the frames recognition fuction, look int visualAnalysis/templateDetect.py
 def showSegmentWrapper(videoFile, templateDir, modelFile, skipIntervalsFile, subtitleFile, outputFile):
     if os.path.exists(extracted_wav_file):
         os.remove(extracted_wav_file)
@@ -63,18 +93,47 @@ def showSegmentWrapper(videoFile, templateDir, modelFile, skipIntervalsFile, sub
     makeMusicSpeechIntervals(audioClassificationFile, audioSpeechIntervalFile)
     find_commercials(subtitleFile, commercial_extracted_file)
     remove_commercials(commercial_extracted_file, audioSpeechIntervalFile, commercial_removed_file)
-    matchedFramesDir = "/".join(outputFile.split("/")[:-1])
-    findFrames(videoFile, templateDir, skipIntervalsFile, commercial_removed_file, matchedFramesDir, outputFile)
+    outputDir = "/".join(outputFile.split("/")[:-1])
+    matches   = findFrames(videoFile, templateDir, skipIntervalsFile, commercial_removed_file, outputDir, outputFile)
+    showDate  = str(findShowDate(videoFile))
+    segmentUsingSegmenetationResults(showDate, matches, videoFile, outputDir)
+
+def showSegmentFromAnnotationsWrapper(videoFile, annotationFile, startInd, endInd,
+ showNameInd, showDateInd, channelInd, pullDateInd, outputDir):
+    segmentUsingAnnotations(videoFile, annotationFile, startInd, endInd, showNameInd,
+     showDateInd, channelInd, pullDateInd, outputDir)
+
 
 # Custom inputs -----------------------------------------------------------------------
-videoFile = "v.mp4"
+
+# Path to video file
+videoFile = "2006-01-10.mp4"
+
+# Path to a file which contains runtime of shows [for faster extraction]
 skipIntervalsFile = "skipIntervals.txt"
+
+# Path to subtile file
 subtitleFile      = "v.txt"
+
+# Path to Output boundaries
 outputFile        = "../files_generated/visualAnalysis/output.txt"
 
+# Directory to output videos segmented
+outputDir         = "../files_generated/visualAnalysis/"
+
+annotationFile    = "../files_used/audioAnalysis/datafile_V2 Anna.csv"
+startInd    = 7
+endInd      = 8
+showDateInd = 4
+showNameInd = 6
+pullDateInd = 2
+channelInd  = 5
 
 showSegmentWrapper(videoFile, templateDir, defaultModel, skipIntervalsFile, subtitleFile, outputFile)
 
+
+
+###### TODO: Complete the parsing module #####################################
 '''
 
 def parse_arguments():
