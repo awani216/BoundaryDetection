@@ -119,14 +119,15 @@ def findFrames(videoFile, templateDir, skipIntervalFile, searchIntervalFile, mat
     # Beginning with frame detection
     n = len(searchIntervals)
     curr = 0
+    vend = int(searchIntervals[n-1][1])
     matches = []
     while(curr<n):
         i, j = searchIntervals[curr][0] -2, searchIntervals[curr][1]+2
         start = int(i*fps)
         end   = int(j*fps)
         cap.set(1, start)
-        curr += 1;
-        while(start<=end):
+        curr += 1
+        while(start<=end and int(i) + 600 < vend):
             ret, frame = cap.read()
             if(not ret):
                 break
@@ -134,7 +135,7 @@ def findFrames(videoFile, templateDir, skipIntervalFile, searchIntervalFile, mat
             ## Video is matched, so we save the image and jump by the skip Interval.
             if(succ):
                 print(start/fps, template_files[prog])
-                matches.append(str(start/fps) + ":" + template_files[prog].split(".")[0])
+                matches.append([(start/fps),template_files[prog].split(".")[0]])
                 cv2.imwrite(matchedFramesDir + "/" + str(start/fps) + ".png", frame)
                 skip_len = prog_len(template_files[prog], skipIntervals)
                 if(skip_len > 100):
@@ -152,7 +153,7 @@ def findFrames(videoFile, templateDir, skipIntervalFile, searchIntervalFile, mat
     # Saving the results
     f = open(outputFile, 'w')
     for i in matches:
-        f.write(i +  '\n')
+        f.write(str(i[0]) + ":" + i[1] +  '\n')
     f.close()
     return matches
 

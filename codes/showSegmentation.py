@@ -23,17 +23,14 @@ from textualAnalysis.music_intervals import makeMusicSpeechIntervals
 from textualAnalysis.commercial_intervals import find_commercials
 from textualAnalysis.remove_commercials import remove_commercials
 from utils.segment import segmentUsingSegmenetationResults, segmentUsingAnnotations
-from utils.dateutil import findShowDate
+from utils.dateTimeUtil import findShowDate
 
 
-#------------------------------------------------------------------------------
-# Default values declaration
+########### Default Values declaration  #######################################
+# You can either specify these from commandline or input them here
 
 # Path to templates to be used for show detection
-templateDir = "../files_used/visualAnalysis/template/"
-
-# Path to audio classification model to be used
-defaultModel = "../files_used/audioAnalysis/audioSpeech.h5"
+defaultTemplateDir = "../files_used/visualAnalysis/template/"
 
 # Path to store audio classification file
 audioClassificationFile = "../files_generated/textualAnalysis/audioSpeech.txt"
@@ -50,15 +47,57 @@ commercial_removed_file = "../files_generated/textualAnalysis/commercial_removed
 # Path to extracted audio file from video
 extracted_wav_file = "../files_generated/audioAnalysis/extracted_sound.wav"
 
+# Path to input audio for classification
+defaultAudioFile = ""
+
+# Path to default Model output
+defaultClassificationFile = ""
+
+# Path to audio classification model to be used
+defaultModel           = "../files_used/audioAnalysis/audioSpeech.h5"
+
 # Default sampling rate for audio analysis
-defaultSamplingRate = 22050
+defaultSamplingRate    = 22050
 
 # Default break Interval for audio analysis
-defaultBreakInterval = 3600
+defaultBreakInterval   = 3600
 
 # Default segment length to classify a audio
-defaultSegLength     = 1
+defaultSegLength       = 1
 
+# Default Music Directory
+defaultMusicDir        = ""
+
+# Default Speech Directory
+defaultSpeechDir       = ""
+
+# Default Output keras moder file
+defaultOutputModelFile = ""
+
+# Path to video file
+defaultVideoFile = "2006-01-10.mp4"
+
+# Path to a file which contains runtime of shows [for faster extraction]
+defaultSkipIntervalsFile = "skipIntervals.txt"
+
+# Path to subtile file
+defaultSubtitleFile      = "st.txt"
+
+# Path to Output boundaries
+defaultBoundaryFile        = "../files_generated/visualAnalysis/output.txt"
+
+# Directory to output videos segmented
+defaultSegmentationDir         = "../files_generated/visualAnalysis/"
+
+# Default values of some parameters for show segmentation using annotations
+# Look into utils/segment.py for more information
+defaultAnnotationFile = ""
+defaultStartInd       = 7
+defaultEndInd         = 8
+defaultShowDateInd    = 4
+defaultShowNameInd    = 6
+defaultPullDateInd    = 2
+defaultChannelInd     = 5
 #------------------------------------------------------------------------------
 
 ## Wrapper to call classification function
@@ -83,7 +122,7 @@ def trainingWrapper(musicDir, speechDir, modelFile, samplingRate, segLength):
 
 ## Wrapper to call show segmentation function
 ## For details on the frames recognition fuction, look int visualAnalysis/templateDetect.py
-def showSegmentWrapper(videoFile, templateDir, modelFile, skipIntervalsFile, subtitleFile, outputFile):
+def showSegmentWrapper(videoFile, templateDir, modelFile, skipIntervalsFile, subtitleFile, outputFile, outputDir):
     if os.path.exists(extracted_wav_file):
         os.remove(extracted_wav_file)
     extractionCommand = "ffmpeg -i " + videoFile + " -ar 22050 -ac 2 " + extracted_wav_file
@@ -93,7 +132,6 @@ def showSegmentWrapper(videoFile, templateDir, modelFile, skipIntervalsFile, sub
     makeMusicSpeechIntervals(audioClassificationFile, audioSpeechIntervalFile)
     find_commercials(subtitleFile, commercial_extracted_file)
     remove_commercials(commercial_extracted_file, audioSpeechIntervalFile, commercial_removed_file)
-    outputDir = "/".join(outputFile.split("/")[:-1])
     matches   = findFrames(videoFile, templateDir, skipIntervalsFile, commercial_removed_file, outputDir, outputFile)
     showDate  = str(findShowDate(videoFile))
     segmentUsingSegmenetationResults(showDate, matches, videoFile, outputDir)
@@ -104,83 +142,114 @@ def showSegmentFromAnnotationsWrapper(videoFile, annotationFile, startInd, endIn
      showDateInd, channelInd, pullDateInd, outputDir)
 
 
-# Custom inputs -----------------------------------------------------------------------
 
-# Path to video file
-videoFile = "2006-01-10.mp4"
-
-# Path to a file which contains runtime of shows [for faster extraction]
-skipIntervalsFile = "skipIntervals.txt"
-
-# Path to subtile file
-subtitleFile      = "v.txt"
-
-# Path to Output boundaries
-outputFile        = "../files_generated/visualAnalysis/output.txt"
-
-# Directory to output videos segmented
-outputDir         = "../files_generated/visualAnalysis/"
-
-annotationFile    = "../files_used/audioAnalysis/datafile_V2 Anna.csv"
-startInd    = 7
-endInd      = 8
-showDateInd = 4
-showNameInd = 6
-pullDateInd = 2
-channelInd  = 5
-
-showSegmentWrapper(videoFile, templateDir, defaultModel, skipIntervalsFile, subtitleFile, outputFile)
-
-
-
-###### TODO: Complete the parsing module #####################################
-'''
-
+###### Input Parser ###########################################################
 def parse_arguments():
     parser = argparse.ArgumentParser(description="A wrapper script "
-                                                 "For boundary detection module")
+                                             "For boundary detection module")
     tasks = parser.add_subparsers(
         title="subcommands", description="available tasks",
-        dest="task", metavar="")
+        dest="tasks", metavar="")
 
     audioSpeech = tasks.add_parser("audioSpeech",
-                                 help="Read a .wav file and classify its seconds as music or speech")
-    audioSpeech.add_argument("-i", "--inputFile", required=True, help="Input File")
-    audioSpeech.add_argument("-o", "--outputFile", required=True, help="Output Keras Model File")
-    audioSpeech.add_argument("-m", "--modelFile", help="classification model to be used", default=defaultModel)
-    audioSpeech.add_argument("-sr", "--samplingRate", default=22050, help="sampling rate to be used")
-    audioSpeech.add_argument("-b", "--breakInterval", default=3600, help="chunk size to break the audio file into")
-    audioSpeech.add_argument("-s", "--segLength", default=1, help="length of intervals for audio classification")
+            help="Read a .wav file and classify its seconds as music or speech")
+    audioSpeech.add_argument("-i", "--inputFile",
+            default=defaultAudioFile, help="Input File")
+    audioSpeech.add_argument("-o", "--outputFile",
+            default=defaultClassificationFile, help="Output classification File")
+    audioSpeech.add_argument("-m", "--modelFile",
+            default=defaultModel, help="classification model to be used")
+    audioSpeech.add_argument("-sr", "--samplingRate",
+            default=defaultSamplingRate, help="sampling rate to be used")
+    audioSpeech.add_argument("-b", "--breakInterval",
+            default=defaultBreakInterval,
+            help="chunk size to break the audio file into")
+    audioSpeech.add_argument("-s", "--segLength",
+            default=defaultSegLength,
+            help="length of intervals for audio classification")
 
-    showSegment = tasks.add_parser("showSegment", help="Read a videoFile and partition it in its show bpundaries")
-    showSegment.add_argument("-i", "--inputFile", required=True, help="Input File")
-    showSegment.add_argument("-o", "--output", required=True, help="Output File")
-    showSegment.add_argument("-m", "--modelFile", help="classification model to be used for audio analysis", default=defaultModel)
-    showSegment.add_argument("-td", "--templateDir", help="Directory containing templates", default=templateDir)
-    showSegment.add_argument("-st", "--subtitleFile", required=True, help="subtitle file of input video")
-    showSegment.add_argument("-si", "--skipInterval", required=True, help="File containing expected length of shows")
+    showSegment = tasks.add_parser("showSegment",
+            help="Read a videoFile and partition it in its show bpundaries")
+    showSegment.add_argument("-i", "--inputFile",
+            default=defaultVideoFile, help="Input File")
+    showSegment.add_argument("-b", "--output",
+            default=defaultBoundaryFile, help="File to output boundaries")
+    showSegment.add_argument("-m", "--modelFile",
+            default=defaultModel,
+            help="classification model to be used for audio analysis")
+    showSegment.add_argument("-td", "--templateDir",
+            default=defaultTemplateDir, help="Directory containing templates")
+    showSegment.add_argument("-st", "--subtitleFile",
+            default=defaultSubtitleFile, help="subtitle file of input video")
+    showSegment.add_argument("-si", "--skipInterval",
+            default=defaultSkipIntervalsFile,
+            help="File containing expected length of shows")
+    showSegment.add_argument("-sd", "--outputDir",
+            default=defaultSegmentationDir, help="save segmented video here")
 
-    training    = tasks.add_parser("training", help="Train a custom music speech classification model")
-    training.add_argument("-md", "--musicDir", required=True, help="Directory containing music files")
-    training.add_argument("-sd", "--speechDir", required=True, help="Directory containing speech files")
-    audioSpeech.add_argument("-mf", "--model", help="Output Model", default=defaultModel)
-    training.add_argument("-sr", "--samplingRate", default=22050, help="sampling rate to be used")
-    training.add_argument("-s", "--segLength", default=1, help="length of intervals for audio classification")
+    training    = tasks.add_parser("training",
+            help="Train a custom music speech classification model")
+    training.add_argument("-md", "--musicDir",
+            default=defaultMusicDir, help="Directory containing music files")
+    training.add_argument("-sd", "--speechDir",
+            default=defaultSpeechDir, help="Directory containing speech files")
+    audioSpeech.add_argument("-mf", "--model",
+            default=defaultOutputModelFile, help="Output Model")
+    training.add_argument("-sr", "--samplingRate",
+            default=defaultSamplingRate, help="sampling rate to be used")
+    training.add_argument("-s", "--segLength",
+            default=defaultSegLength,
+            help="length of intervals for audio classification")
+
+    showSegmentAnnotaions = tasks.add_parser("showSegmentAnnotated",
+            help="Read an annotation file and segment video")
+    showSegmentAnnotaions.add_argument("-i", "--inputFile",
+            default=defaultVideoFile, help="video file")
+    showSegmentAnnotaions.add_argument("-a", "--annotationsFile",
+            default=defaultAnnotationFile, help="annotations file")
+    showSegmentAnnotaions.add_argument("-si", "--startInd",
+            default=defaultStartInd,
+            help="Index of column containing start time")
+    showSegmentAnnotaions.add_argument("-ei", "--endInd",
+            default=defaultEndInd, help="Index of column containing end time")
+    showSegmentAnnotaions.add_argument("-sdi", "--showDateInd",
+            default=defaultShowDateInd,
+            help="Index of column containing show date")
+    showSegmentAnnotaions.add_argument("-sni", "--showNameInd",
+            default=defaultShowNameInd,
+            help="Index of column containing show name")
+    showSegmentAnnotaions.add_argument("-pdi", "--pullDateInd",
+            default=defaultPullDateInd,
+            help="Index of column containing pull date")
+    showSegmentAnnotaions.add_argument("-ci", "--channelInd",
+            default=defaultChannelInd,
+            help="Index of column containing end time")
+    showSegmentAnnotaions.add_argument("-od", "--outputDir",
+            default=defaultSegmentationDir, help="save segmented video here")
 
     return parser.parse_args()
 
 if __name__ == "__main__":
     args = parse_arguments()
-    print(args)
+
     if (args.tasks == "showSegment"):
-        showSegmentWrapper(args.inputFile, args.templateDir, args.modelFile, args.skipInterval, args.subtitleFile, args.output)
+        showSegmentWrapper(args.inputFile, args.templateDir, args.modelFile,
+                    args.skipInterval, args.subtitleFile, args.output,
+                    args.outputDir)
 
     elif (args.tasks == "classification"):
-        classificationWrapper(args.inputFile, args.outputFile, args.modelFile, args.samplingRate, args.breakInterval, args.skipInterval)
+        classificationWrapper(args.inputFile, args.outputFile, args.modelFile,
+                    args.samplingRate, args.breakInterval, args.skipInterval)
 
     elif (args.tasks == "training"):
-        trainingWrapper(args.musicDir, args.speechDir, args.model, args.samplingRate, args.segLength)
+        trainingWrapper(args.musicDir, args.speechDir, args.model,
+                    args.samplingRate, args.segLength)
+
+    elif (args.task == "showSegmentAnnotated"):
+        showSegmentFromAnnotationsWrapper(args.inputFile, args.annotationFile,
+                    args.startInd, args.endInd, args.showNameInd,
+                    args.showDateInd, args.pullDateInd, args.channelInd,
+                    args.outputDir)
 
     else:
         Error("Invalid Task")
-'''
