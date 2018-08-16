@@ -91,7 +91,7 @@ defaultSegmentationDir         = "../files_generated/visualAnalysis/"
 
 # Default values of some parameters for show segmentation using annotations
 # Look into utils/segment.py for more information
-defaultAnnotationFile = ""
+defaultAnnotationFile = "ann.csv"
 defaultStartInd       = 7
 defaultEndInd         = 8
 defaultShowDateInd    = 4
@@ -151,7 +151,7 @@ def parse_arguments():
         title="subcommands", description="available tasks",
         dest="tasks", metavar="")
 
-    audioSpeech = tasks.add_parser("audioSpeech",
+    audioSpeech = tasks.add_parser("classification",
             help="Read a .wav file and classify its seconds as music or speech")
     audioSpeech.add_argument("-i", "--inputFile",
             default=defaultAudioFile, help="Input File")
@@ -193,7 +193,7 @@ def parse_arguments():
             default=defaultMusicDir, help="Directory containing music files")
     training.add_argument("-sd", "--speechDir",
             default=defaultSpeechDir, help="Directory containing speech files")
-    audioSpeech.add_argument("-mf", "--model",
+    training.add_argument("-mf", "--model",
             default=defaultOutputModelFile, help="Output Model")
     training.add_argument("-sr", "--samplingRate",
             default=defaultSamplingRate, help="sampling rate to be used")
@@ -239,16 +239,16 @@ if __name__ == "__main__":
 
     elif (args.tasks == "classification"):
         classificationWrapper(args.inputFile, args.outputFile, args.modelFile,
-                    args.samplingRate, args.breakInterval, args.skipInterval)
+                    args.samplingRate, args.breakInterval, args.segLength)
 
     elif (args.tasks == "training"):
         trainingWrapper(args.musicDir, args.speechDir, args.model,
                     args.samplingRate, args.segLength)
 
-    elif (args.task == "showSegmentAnnotated"):
-        showSegmentFromAnnotationsWrapper(args.inputFile, args.annotationFile,
+    elif (args.tasks == "showSegmentAnnotated"):
+        showSegmentFromAnnotationsWrapper(args.inputFile, args.annotationsFile,
                     args.startInd, args.endInd, args.showNameInd,
-                    args.showDateInd, args.pullDateInd, args.channelInd,
+                    args.showDateInd, args.channelInd, args.pullDateInd,
                     args.outputDir)
 
     else:
