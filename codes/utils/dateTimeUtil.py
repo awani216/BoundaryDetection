@@ -17,6 +17,7 @@ from datetime import date, timedelta
 # videoFile : name of video file in the format YYYY-MM-DD*.mp4.
 # Output is a date string in the format YYYY-MM-DD
 def findShowDate(videoFile):
+    videoFile = videoFile.split("/")[-1]
     year  = int(videoFile[0:4])
     month = int(videoFile[5:7])
     day   = int(videoFile[8:10])

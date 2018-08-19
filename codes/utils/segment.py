@@ -61,12 +61,13 @@ def segmentUsingAnnotations(videoFile, annotationFile, startInd, endInd,
 showNameInd, showDateInd, channelInd, pullDateInd, outputDir):
     annotation = open(annotationFile, 'r')
     annotation = csv.reader(annotation)
-
+    print(annotation)
     for line in annotation:
         ## Checking if the video pull date and the video matches, to avoid errors
         #  in files which have annotaions for more than 1 video.
         pulldate      = line[pullDateInd]
-        videoPullDate = "-".join([videoFile[0:4], videoFile[5:7], videoFile[8:10]])
+        videoFileA    = videoFile.split("/")[-1]
+        videoPullDate = "-".join([videoFileA[0:4], videoFileA[5:7], videoFileA[8:10]])
         if(pulldate  != videoPullDate):
             continue
         showDate      = line[showDateInd]
